@@ -26,6 +26,11 @@ quotidienne et détection des croisements EMA9/EMA20.
      bas des 20 dernières séances
    - `pages/5_Opportunites.py` : setups d'achat classés par **score
      d'opportunité**, avec stop-loss et objectif suggérés (basés sur l'ATR)
+   - `pages/6_Backtest.py` : performance historique réelle de chaque type de
+     signal, calculée sur les archives accumulées dans `data/history/`
+
+   Chaque page (sauf le backtest) inclut aussi un graphique cours + EMA9/EMA20
+   avec sélecteur d'action, via le composant partagé `src/chart.py`.
 
 ### Indicateurs calculés pour chaque action
 
@@ -67,6 +72,20 @@ quotidienne et détection des croisements EMA9/EMA20.
   est en zone extrême. C'est un point de départ empirique, affiné avec
   l'expérience et, plus tard, avec les résultats du backtesting sur
   `data/history/`. Formule complète dans `src/indicators.py::compute_opportunity_score`.
+
+### Backtesting
+
+`src/backtest.py` exploite les archives quotidiennes de `data/history/` pour
+mesurer, sans aucun téléchargement supplémentaire, la performance réelle
+constatée après chaque type de signal (croisement, cassure, score
+d'opportunité élevé), sur plusieurs horizons (2, 5, 10 jours de bourse par
+défaut). Le principe : comparer le cours du jour du signal au cours du même
+ticker N archives plus loin.
+
+Les statistiques deviennent fiables après plusieurs semaines d'accumulation
+(quelques dizaines de signaux par catégorie). Avec un historique jeune, la
+page `pages/6_Backtest.py` affiche un avertissement et les résultats
+s'affinent automatiquement à chaque scan quotidien.
 
 Aucune infrastructure à gérer : tout tourne sur GitHub (calcul) et Streamlit
 Community Cloud (affichage), gratuitement.
