@@ -6,11 +6,10 @@ lors de la dernière session boursière.
 import os
 
 import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
-import yfinance as yf
 
 from src import config
+from src.chart import render_stock_chart
 
 st.set_page_config(page_title="Croisements EMA - Scanner PEA", page_icon="📈", layout="wide")
 st.title("🔀 Croisements EMA9 / EMA20 du jour")
@@ -68,34 +67,4 @@ st.dataframe(
     hide_index=True,
 )
 
-st.divider()
-st.subheader("Visualiser un croisement")
-
-ticker_choisi = st.selectbox("Choisir une action pour afficher son graphique", df_filtre["ticker"].tolist())
-
-if ticker_choisi:
-    hist = yf.Ticker(ticker_choisi).history(period=config.HISTORY_PERIOD, interval=config.HISTORY_INTERVAL, auto_adjust=False)
-    hist[f"EMA_{config.EMA_SHORT}"] = hist["Close"].ewm(span=config.EMA_SHORT, adjust=False).mean()
-    hist[f"EMA_{config.EMA_LONG}"] = hist["Close"].ewm(span=config.EMA_LONG, adjust=False).mean()
-
-    # Les EMA sont calculées sur l'historique complet (2 ans, nécessaire pour
-    # leur stabilisation) mais on n'affiche que les 6 derniers mois pour que
-    # le graphique reste lisible.
-    hist_affiche = hist.tail(130)
-
-    fig = go.Figure()
-    fig.add_trace(go.Candlestick(
-        x=hist_affiche.index, open=hist_affiche["Open"], high=hist_affiche["High"],
-        low=hist_affiche["Low"], close=hist_affiche["Close"],
-        name="Cours",
-    ))
-    fig.add_trace(go.Scatter(x=hist_affiche.index, y=hist_affiche[f"EMA_{config.EMA_SHORT}"],
-                              name=f"EMA{config.EMA_SHORT}", line=dict(color="orange", width=1.5)))
-    fig.add_trace(go.Scatter(x=hist_affiche.index, y=hist_affiche[f"EMA_{config.EMA_LONG}"],
-                              name=f"EMA{config.EMA_LONG}", line=dict(color="blue", width=1.5)))
-    fig.update_layout(
-        title=f"{ticker_choisi} — Cours et EMA{config.EMA_SHORT}/{config.EMA_LONG}",
-        xaxis_rangeslider_visible=False,
-        height=550,
-    )
-    st.plotly_chart(fig, use_container_width=True)
+render_stock_chart(df_filtre["ticker"].tolist(), key="croisements", titre="Visualiser un croisement")

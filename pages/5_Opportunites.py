@@ -15,6 +15,7 @@ import pandas as pd
 import streamlit as st
 
 from src import config
+from src.chart import render_stock_chart
 
 st.set_page_config(page_title="Opportunités - Scanner PEA", page_icon="🎯", layout="wide")
 st.title("🎯 Opportunités de swing trading")
@@ -82,3 +83,5 @@ st.caption(
     "Ce sont des repères indicatifs basés sur la volatilité récente, pas une recommandation "
     "d'investissement — à ajuster selon le contexte du titre (supports/résistances, actualité)."
 )
+
+render_stock_chart(df_opp["ticker"].tolist(), key="opportunites")

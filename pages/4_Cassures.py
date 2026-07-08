@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from src import config
+from src.chart import render_stock_chart
 
 st.set_page_config(page_title="Cassures - Scanner PEA", page_icon="🚀", layout="wide")
 st.title("🚀 Cassures 20 jours")
@@ -66,3 +67,5 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
 )
+
+render_stock_chart(df_filtre["ticker"].tolist(), key="cassures")

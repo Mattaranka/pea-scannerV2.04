@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from src import config
+from src.chart import render_stock_chart
 
 st.set_page_config(page_title="Volumes - Scanner PEA", page_icon="📶", layout="wide")
 st.title("📶 Volumes anormaux")
@@ -56,3 +57,5 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
 )
+
+render_stock_chart(df_spike["ticker"].tolist(), key="volumes")
