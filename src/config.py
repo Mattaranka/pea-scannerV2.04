@@ -33,6 +33,10 @@ SIGNAL_LOOKBACK_DAYS = 10    # fenêtre de recherche pour "depuis combien de jou
 # (score théorique entre -15 et +18 environ avec le barème actuel)
 OPPORTUNITY_MIN_SCORE = 5
 
+# Horizons (en nombre de séances de scan, donc de jours de bourse) sur
+# lesquels le backtesting mesure la performance après un signal.
+BACKTEST_HORIZONS = [2, 5, 10]
+
 # Nombre de mois/années d'historique téléchargés. 2 ans sont nécessaires pour
 # stabiliser l'EMA200 (qui a besoin de beaucoup de recul pour converger) et
 # pour calculer un vrai plus haut/plus bas sur 52 semaines.
